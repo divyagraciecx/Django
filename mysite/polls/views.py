@@ -10,22 +10,32 @@ from .models import Question
     #return HttpResponse(output)
     #template = loader.get_template('polls/index.html')
     #context = {
-        #'latest_question_list': latest_question_list,
+    #    'latest_question_list': latest_question_list,
     #}
     #return HttpResponse(template.render(context, request))
-from django.http import Http404
 
-def detail(request, question_id):
-    try:
-        question = Question.objects.get(pk=question_id)
-    except Question.DoesNotExist:
-        raise Http404("Question does not exist")
-    return render(request, 'polls/detail.html', {'question': question})
-
+#modified index method to use the template
 def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
     context = {'latest_question_list': latest_question_list}
     return render(request, 'polls/index.html', context)
+
+from django.http import Http404
+
+#def detail(request, question_id):
+#    try:
+#        question = Question.objects.get(pk=question_id)
+#    except Question.DoesNotExist:
+#        raise Http404("Question does not exist")
+#    return render(request, 'polls/detail.html', {'question': question})
+
+#A shortcut: get_object_or_404() to the above method.
+from django.shortcuts import get_object_or_404, render
+def detail(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    #print(question)
+    return render(request, 'polls/detail.html', {'question': question})
+
 
 # displays a question text, with no results but with a form to vote.
 #def detail(request, question_id):
